@@ -6,12 +6,16 @@
 
 <body>
   <select id="distance">
-    <option value="150">Glurch the Abominous Mass</option>
-    <option value="350">Ghorm the Devourer</option>
+    <option value="75">Glurch the Abominous Mass</option>
+    <option value="250">Ghorm the Devourer</option>
+    <option value="330">The Hive Mother</option>
+    <option value="500">Great Wall</option>
     <option value="600">Azeos the Sky Titan</option>
+    <option value="350">Malugaz the Corrupted</option>
     <option value="900">Ivy the Poisonous Mass</option>
-    <option value="1200">Omoroth the Sea Titan</option>
-    <option value="1500">Morpha the Aquatic Mass</option>
+    <option value="1100">Omoroth the Sea Titan</option>
+    <option value="1400">Morpha the Aquatic Mass</option>
+    <option value="1">Phantom Spark Materials</option>
   </select>
   <p>Distance Finder Instructions:
   <ol>
@@ -29,6 +33,7 @@
 
 
   <script>
+    const the_great_wall_distance = 500;
     let state = "paste";
     let centerpt;
     let wallring;
@@ -51,16 +56,23 @@
         wallring = getMousePos(element, evt);
         state = "paste";
         drawWallringPoint();
-        return drawIvyCircle();
+        if (document.getElementById("distance").value === 1) {
+          let list = [1000, 1200, 1300, 1500];
+          list.forEach(function(val) {
+            _drawCircle(val);
+          });
+        } else {
+          return drawCircle();
+        }
       }
     }
     function drawCenterPoint(){
       var canvas = document.getElementById("mycanvas");
       var ctx = canvas.getContext('2d');
       ctx.beginPath();
-      let radius = 10;
+      let radius = 5;
       ctx.fillStyle = "#FFFFFF";
-      ctx.lineWidth = 5;
+      ctx.lineWidth = 3;
       ctx.arc(centerpt.x, centerpt.y, radius, 0, 2 * Math.PI);
       ctx.fill();
     }
@@ -68,24 +80,46 @@
       var canvas = document.getElementById("mycanvas");
       var ctx = canvas.getContext('2d');
       ctx.beginPath();
-      let radius = 10;
+      let radius = 5;
       ctx.fillStyle = "#FFFFFF";
-      ctx.lineWidth = 5;
+      ctx.lineWidth = 3;
       ctx.arc(wallring.x, wallring.y, radius, 0, 2 * Math.PI);
       ctx.fill();
     }
 
-    function drawIvyCircle() {
+    function drawCircle() {
+      var elem = document.getElementById('distance');
+      if (elem.value == 1) {
+        let list = [1000, 1200, 1500, 1700];
+        list.forEach(function(val) {
+          _drawCircle(val);
+        });
+        return;
+      }
       var canvas = document.getElementById("mycanvas");
       var ctx = canvas.getContext('2d');
       ctx.beginPath();
       let radius = Math.sqrt(Math.pow(centerpt.x - wallring.x, 2) + Math.pow(centerpt.y - wallring.y, 2));
-      let input = document.getElementById("distance").value / 1000;
+      let input = elem.value / the_great_wall_distance;
       console.log(input);
-      radius = radius * (1.0 + input);
+      radius = radius * (input);
       ctx.globalAlpha = 0.3;
-      ctx.strokeStyle = "#FF00FF";
-      ctx.lineWidth = 20;
+      ctx.strokeStyle = "#FF0000";
+      ctx.lineWidth = 5;
+      ctx.arc(centerpt.x, centerpt.y, radius, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+
+    function _drawCircle(val) {
+      var canvas = document.getElementById("mycanvas");
+      var ctx = canvas.getContext('2d');
+      ctx.beginPath();
+      let radius = Math.sqrt(Math.pow(centerpt.x - wallring.x, 2) + Math.pow(centerpt.y - wallring.y, 2));
+      let input = val / the_great_wall_distance;
+      radius = radius * (input);
+      ctx.globalAlpha = 0.3;
+      ctx.strokeStyle = "#00FF00";
+      ctx.lineWidth = 5;
       ctx.arc(centerpt.x, centerpt.y, radius, 0, 2 * Math.PI);
       ctx.stroke();
     }
@@ -153,6 +187,13 @@
           img.src = URLObj.createObjectURL(imageBlob);
         }
       });
+    }, false);
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var elem = document.getElementById('distance');
+      elem.addEventListener('change', function(){
+        return drawCircle();
+      }, false);
     }, false);
 
   </script>
